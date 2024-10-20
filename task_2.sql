@@ -1,4 +1,10 @@
--- Create Books table
+-- Create Authors table first, as it's referenced by Books
+CREATE TABLE IF NOT EXISTS authors (
+    author_id INT PRIMARY KEY AUTO_INCREMENT,
+    author_name VARCHAR(215) NOT NULL
+);
+
+-- Create Books table, which references the Authors table
 CREATE TABLE IF NOT EXISTS books (
     book_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(130) NOT NULL,
@@ -8,13 +14,7 @@ CREATE TABLE IF NOT EXISTS books (
     FOREIGN KEY (author_id) REFERENCES authors(author_id)
 );
 
--- Create Authors table
-CREATE TABLE IF NOT EXISTS authors (
-    author_id INT PRIMARY KEY AUTO_INCREMENT,
-    author_name VARCHAR(215) NOT NULL
-);
-
--- Create Customers table
+-- Create Customers table first, as it's referenced by Orders
 CREATE TABLE IF NOT EXISTS customers (
     customer_id INT PRIMARY KEY AUTO_INCREMENT,
     customer_name VARCHAR(215) NOT NULL,
@@ -22,20 +22,20 @@ CREATE TABLE IF NOT EXISTS customers (
     address TEXT
 );
 
--- Create Orders table
+-- Create Orders table, which references Customers
 CREATE TABLE IF NOT EXISTS orders (
     order_id INT PRIMARY KEY AUTO_INCREMENT,
     customer_id INT,
     order_date DATE,
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 
--- Create Order_Details table
+-- Create Order_Details table, which references both Orders and Books
 CREATE TABLE IF NOT EXISTS order_details (
     orderdetailid INT PRIMARY KEY AUTO_INCREMENT,
     order_id INT,
     book_id INT,
     quantity DOUBLE,
-    FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (book_id) REFERENCES books(book_id)
 );
